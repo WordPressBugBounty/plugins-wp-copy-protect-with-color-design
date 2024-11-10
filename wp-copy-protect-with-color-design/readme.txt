@@ -218,5 +218,10 @@ WordPress 6.3 checked
 WordPress 6.4 checked
 
 
-**2.3.8 - August 21, 2024**
+**2.3.9 - August 21, 2024**
 WordPress 6.6 checked
+
+
+**2.4.0 - November 10, 2024**
+Safari Browser and other browsers checked
+Working Ok
