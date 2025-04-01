@@ -32,7 +32,7 @@
 ?>
 
 <div class="wrap" style="float:left;"><br/>
-	<h1>WP Content Copy Protection with Color Design <font size="2">v2.4.0</font></h1>
+	<h1>WP Content Copy Protection with Color Design <font size="2">v2.4.1</font></h1>
 
 <?php
 	 /***

@@ -4,7 +4,7 @@ Plugin Name: WP Content Copy Protection with Color Design
 Plugin URI: https://global-s-h.com/wp_protect/en/
 Description: This plugin wll protect the posts content from copying by disable right click and disable selecting text. You can exclude pages and posts. It also keeps from dragging images.  The message window can change color design. You can protect only specified pages and posts.
 Author: Kazuki Yanamoto
-Version: 2.4.0
+Version: 2.4.1
 License: GPLv2 or later
 Text Domain: wp-copy-protect-with-color-design
 Domain Path: /languages/

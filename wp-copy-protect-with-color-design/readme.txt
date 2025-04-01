@@ -3,8 +3,8 @@ Contributors: kazukiyanamoto
 Donate link: https://global-s-h.com/wp_protect/en/index.php#donate
 Tags: content, content copy protection,  content protection, content theft, copy protection, copy protect, prevent copy, protect blog, image protect, image protection, no right click, plagiarism, secure content
 Requires at least: 3.0 or higher
-Tested up to: 6.6
-Stable tag: 2.3.9
+Tested up to: 6.7
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,8 +52,6 @@ Generally, upload .zip folder to WordPress.
 = Does is affects SEO? =
 No, it won`t affects SEO. It uses very short javascript codes and css that the search engine crawler will smoothly stream.
 
-= Does it work on smartphone and tablet? =
-Yes, the text and images will be protected even if the users are using smartphone or tablet.
 
 = Can I just only disable right click and have no messages? =
 Yes, you can change it from the option page.
@@ -225,3 +223,7 @@ WordPress 6.6 checked
 **2.4.0 - November 10, 2024**
 Safari Browser and other browsers checked
 Working Ok
+
+
+**2.4.1 - April 1, 2025**
+WordPress 6.7 checked
