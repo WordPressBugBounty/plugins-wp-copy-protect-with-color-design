@@ -4,7 +4,7 @@ Plugin Name: WP Content Copy Protection with Color Design
 Plugin URI: https://global-s-h.com/wp_protect/en/
 Description: This plugin wll protect the posts content from copying by disable right click and disable selecting text. You can exclude pages and posts. It also keeps from dragging images.  The message window can change color design. You can protect only specified pages and posts.
 Author: Kazuki Yanamoto
-Version: 2.4.1
+Version: 2.4.2
 License: GPLv2 or later
 Text Domain: wp-copy-protect-with-color-design
 Domain Path: /languages/
@@ -27,8 +27,8 @@ class CopyProtect
         }
         //アンインストール
         if (function_exists('register_uninstall_hook')) {
-            register_uninstall_hook(__FILE__, $this, 'uninstallHook');
-        }
+			register_uninstall_hook(__FILE__, array('CopyProtect', 'uninstallHook'));
+		}
 
         //header()のフック
         //style/jQueryのリンク
@@ -64,59 +64,6 @@ class CopyProtect
 		add_action( 'admin_enqueue_scripts', 'WP_content_copy_cd_admin_scripts' );
 		
 		
-		//ダッシュボードにレコメンドプラグインを追加
-		add_action('wp_dashboard_setup', 'post_view_counter_dashboard_widgets');
-
-			function post_view_counter_dashboard_widgets() {
-			
-				function is_post_view_plugin_active($file) {
-				$is_post_view_active = false;
-				foreach ((array) get_option('active_plugins') as $val) {
-					if (preg_match('/'.preg_quote($file, '/').'/i', $val)) {
-						$is_post_view_active = true;
-						break;
-					}
-				}
-				return $is_post_view_active;
-				}
-				$is_post_view_active = is_post_view_plugin_active('post-views-stats-counter/wp_pvscounter.php');
-
-				if($is_post_view_active == false){
-					 global $wp_meta_boxes;
-					 wp_add_dashboard_widget('plugin_post_view_stats_counter', 'Recommended SEO plugin', 'post_view_stats_dashboard_text');
-				} 
-					
-					function post_view_stats_dashboard_text() { 
-
-					if (is_multisite() == true){
-						$dashboard_post_view_stats  = '';
-						$dashboard_post_view_stats .= '<div style="background-color:white;padding:15px;border-left:solid #46b450 5px;font-weight:500;">';
-						$dashboard_post_view_stats .= __('Would you like to install another recommended SEO plugin? :Free', 'wp-copy-protect-with-color-design' );
-						$dashboard_post_view_stats .= '<br>';
-						$dashboard_post_view_stats .= '<div align="right">';
-						$dashboard_post_view_stats .= '<a href="'.site_url().'/wp-admin/network/plugin-install.php?tab=plugin-information&plugin=post-views-stats-counter" target="_blank" style="font-size:18px;">';
-						$dashboard_post_view_stats .= __('You can install "Post Views Stats Counter"', 'wp-copy-protect-with-color-design' );
-						$dashboard_post_view_stats .= '</a>';
-						$dashboard_post_view_stats .= '</div>';
-						$dashboard_post_view_stats .= '</div>';
-					}else{
-						$dashboard_post_view_stats  = '';
-						$dashboard_post_view_stats .= '<div style="background-color:white;padding:15px;border-left:solid #46b450 5px;font-weight:500;">';
-						$dashboard_post_view_stats .= __('Would you like to install another recommended SEO plugin? :Free', 'wp-copy-protect-with-color-design' );
-						$dashboard_post_view_stats .= '<br>';
-						$dashboard_post_view_stats .= '<div align="right">';
-						$dashboard_post_view_stats .= '<a href="'.site_url().'/wp-admin/plugin-install.php?tab=plugin-information&plugin=post-views-stats-counter" target="_blank" style="font-size:18px;">';
-						$dashboard_post_view_stats .= __('You can install "Post Views Stats Counter"', 'wp-copy-protect-with-color-design' );
-						$dashboard_post_view_stats .= '</a>';
-						$dashboard_post_view_stats .= '</div>';
-						$dashboard_post_view_stats .= '</div>';	
-					}
-						$dashboard_post_view_stats .= '<br>';
-						$dashboard_post_view_stats .= __('This plugin will display how many times post and page viewed. It shows total view of access per day, week, month, and all days. Those view are showed with titles and permalink so that you can keep track of each pages in details.', 'wp-copy-protect-with-color-design' );
-					echo $dashboard_post_view_stats;
-					}
-			}
-		//ダッシュボードにレコメンドプラグインを追加の終了
 
     }
 
@@ -190,24 +137,14 @@ class CopyProtect
     ***/
     public function deactivationHook()
     {
-        delete_option('protect_plugin_value_click');
-        delete_option('protect_plugin_value_select_text');
-        delete_option('protect_plugin_value_subject');
-        delete_option('protect_plugin_value_print_no');
-        delete_option('protect_plugin_value_color');
-        delete_option('protect_plugin_value_user');
-        delete_option('protect_plugin_value_admin');
-		delete_option('protect_plugin_value_pages');
-		delete_option('protect_plugin_value_posts');
-		delete_option('protect_plugin_value_include');
-		delete_option('protect_plugin_value_include_posts');
+        
     }
 
 
     /***
      * アンインストール時
     ***/
-    public function uninstallHook()
+    public static function uninstallHook()
     {
         delete_option('protect_plugin_value_click');
         delete_option('protect_plugin_value_select_text');
@@ -252,21 +189,25 @@ class CopyProtect
      * idのページを省く
     ***/
 	public function protect_excluded() {
-		
-		$excluded_id = explode(',', get_option('protect_plugin_value_pages'));
-		
-		if(is_array($excluded_id)) {
-			
-			foreach($excluded_id as $pages_id) {
-				
-				if(null != $pages_id && is_page($pages_id)) {
-					
-					return true;
-				}
-			}
-		}
-		
-		return false;
+	    
+	    // 設定値を取得
+	    $excluded_raw = get_option('protect_plugin_value_pages');
+	    // explodeで配列に分割し、array_filterで空の要素を除去
+	    $excluded_id = array_filter(explode(',', $excluded_raw));
+	    
+	    if(is_array($excluded_id)) {
+	        
+	        foreach($excluded_id as $pages_id) {
+	            
+	            // is_page()で現在のページIDが除外リストにあるか確認
+	            if(null != $pages_id && is_page($pages_id)) {
+	                
+	                return true; // 除外する（保護しない）
+	            }
+	        }
+	    }
+	    
+	    return false; 
 	}
 
 
@@ -274,21 +215,24 @@ class CopyProtect
      * idのポストを省く
     ***/
 	public function protect_excluded_posts() {
-		
-		$excluded_id = explode(',', get_option('protect_plugin_value_posts'));
-		
-		if(is_array($excluded_id)) {
-			
-			foreach($excluded_id as $posts_id) {
-				
-				if(null != $posts_id && is_single($posts_id)) {
-					
-					return true;
-				}
-			}
-		}
-		
-		return false;
+	    
+	    // 設定値を取得
+	    $excluded_raw = get_option('protect_plugin_value_posts');
+	    // explodeで配列に分割し、array_filterで空の要素を除去
+	    $excluded_id = array_filter(explode(',', $excluded_raw));
+	    
+	    if(is_array($excluded_id)) {
+	        
+	        foreach($excluded_id as $posts_id) {
+	            
+	            if(null != $posts_id && is_single($posts_id)) {
+	                
+	                return true;
+	            }
+	        }
+	    }
+	    
+	    return false;
 	}
 
 
@@ -296,21 +240,24 @@ class CopyProtect
      * idのページだけを守る
     ***/
 	public function protect_included() {
-		
-		$included_id = explode(',', get_option('protect_plugin_value_include'));
-		
-		if(is_array($included_id)) {
-			
-			foreach($included_id as $include_id) {
-				
-				if(null != $include_id && is_page($include_id)) {
-					
-					return true;
-				}
-			}
-		}
-		
-		return false;
+	    
+	    // 設定値を取得
+	    $included_raw = get_option('protect_plugin_value_include');
+	    // explodeで配列に分割し、array_filterで空の要素を除去
+	    $included_id = array_filter(explode(',', $included_raw));
+	    
+	    if(is_array($included_id)) {
+	        
+	        foreach($included_id as $include_id) {
+	            
+	            if(null != $include_id && is_page($include_id)) {
+	                
+	                return true;
+	            }
+	        }
+	    }
+	    
+	    return false;
 	}
 
 
@@ -318,21 +265,24 @@ class CopyProtect
      * idのポストだけを守る
     ***/
 	public function protect_included_posts() {
-		
-		$included_id = explode(',', get_option('protect_plugin_value_include_posts'));
-		
-		if(is_array($included_id)) {
-			
-			foreach($included_id as $include_id_posts) {
-				
-				if(null != $include_id_posts && is_single($include_id_posts)) {
-					
-					return true;
-				}
-			}
-		}
-		
-		return false;
+	    
+	    // 設定値を取得
+	    $included_raw = get_option('protect_plugin_value_include_posts');
+	    // explodeで配列に分割し、array_filterで空の要素を除去
+	    $included_id = array_filter(explode(',', $included_raw));
+	    
+	    if(is_array($included_id)) {
+	        
+	        foreach($included_id as $include_id_posts) {
+	            
+	            if(null != $include_id_posts && is_single($include_id_posts)) {
+	                
+	                return true;
+	            }
+	        }
+	    }
+	    
+	    return false;
 	}
 	
 	
@@ -424,22 +374,27 @@ class CopyProtect
 											<?php
 												//ユーザーエージェント判定
 												function wp_content_protection_cd_is_mac () {
-												$useragents = array(
-													
-													'iPhone',
-													'iPod',
-													'iPad'
-												);
-												$pattern = '/'.implode('|', $useragents).'/i';
-												return preg_match($pattern, $_SERVER['HTTP_USER_AGENT']);
+												    $useragents = array(
+												        'iPhone',
+												        'iPod',
+												        'iPad'
+												    );
+												    $pattern = '/'.implode('|', $useragents).'/i';
+												    
+												    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? ''; 
+												    
+												    return preg_match($pattern, $user_agent); 
 												}
-												function wp_content_protection_cd_is_firefox () {
-												$useragents = array(
 
-													'FxiOS'
-												);
-												$pattern = '/'.implode('|', $useragents).'/i';
-												return preg_match($pattern, $_SERVER['HTTP_USER_AGENT']);
+												function wp_content_protection_cd_is_firefox () {
+												    $useragents = array(
+												        'FxiOS'
+												    );
+												    $pattern = '/'.implode('|', $useragents).'/i';
+												    
+												    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+												    
+												    return preg_match($pattern, $user_agent); 
 												}
 											?>
 

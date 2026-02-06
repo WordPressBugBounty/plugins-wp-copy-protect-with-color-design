@@ -3,8 +3,8 @@ Contributors: kazukiyanamoto
 Donate link: https://global-s-h.com/wp_protect/en/index.php#donate
 Tags: content, content copy protection,  content protection, content theft, copy protection, copy protect, prevent copy, protect blog, image protect, image protection, no right click, plagiarism, secure content
 Requires at least: 3.0 or higher
-Tested up to: 6.7
-Stable tag: 2.4.1
+Tested up to: 6.8
+Stable tag: 2.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -227,3 +227,10 @@ Working Ok
 
 **2.4.1 - April 1, 2025**
 WordPress 6.7 checked
+
+
+**2.4.2 - Octover 10, 2025**
+WordPress 6.8 checked
+Store data even deactivation.
+Bug fixed.
+Warning fixed.

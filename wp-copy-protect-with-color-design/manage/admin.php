@@ -9,20 +9,20 @@
 		$file= get_option('content_protect_plus_dir');
 		$is_act = false;
 		
-		foreach ((array) get_option('active_plugins') as $val) {
+		foreach ((array) get_option('active_plugins', []) as $val) { 
 			if (preg_match('/'.preg_quote($file, '/').'/i', $val)) {
 				$is_act = true;
 			}
 		}
 	}
-
+	
 
 	$is_act2 = false;
 	if(get_option('javascript-protection-proversion_dir')){
 		$file= get_option('javascript-protection-proversion_dir');
 		$is_act2 = false;
 		
-		foreach ((array) get_option('active_plugins') as $val) {
+		foreach ((array) get_option('active_plugins', []) as $val) { 
 			if (preg_match('/'.preg_quote($file, '/').'/i', $val)) {
 				$is_act2 = true;
 			}
@@ -32,82 +32,78 @@
 ?>
 
 <div class="wrap" style="float:left;"><br/>
-	<h1>WP Content Copy Protection with Color Design <font size="2">v2.4.1</font></h1>
+	<h1>WP Content Copy Protection with Color Design <font size="2">v2.4.2</font></h1>
 
 <?php
 	 /***
 	   *Saveされた時の処理
 	 ***/
 
- 	 $Protect_Copy_save = @$_POST['Protect_Copy_save'];
-     $Protect_Copy_save = wp_kses($Protect_Copy_save, array());
-		
-		if ( isset( $Protect_Copy_save )){
+$Protect_Copy_save = $_POST['Protect_Copy_save'] ?? '';  // null 合体演算子で空文字を代入
+$Protect_Copy_save = wp_kses($Protect_Copy_save, array());
 
-		   //nonceチェック
-	       if ( isset( $_POST['_wpnonce'] ) && $_POST['_wpnonce'] ) {
-	            if ( check_admin_referer( 'WPprotect_plugin', '_wpnonce' ) ) {
+if ( isset( $Protect_Copy_save ) && $Protect_Copy_save !== '' ) {
+    // nonce チェック
+    if ( isset( $_POST['_wpnonce'] ) && $_POST['_wpnonce'] ) {
+        if ( check_admin_referer( 'WPprotect_plugin', '_wpnonce' ) ) {
 
-		        	//POST取得
-			        $protect_plugin_value_click = @$_POST['protect_plugin_value_click'];
-					$protect_plugin_value_click = (int) $protect_plugin_value_click;
-			        $protect_plugin_value_click = wp_kses($protect_plugin_value_click, array());
+            // POST取得。各値を初期化付きで取得
+            $protect_plugin_value_click = $_POST['protect_plugin_value_click'] ?? '';
+            $protect_plugin_value_click = wp_kses($protect_plugin_value_click, array());
 
-					$protect_plugin_value_select_text = @$_POST['protect_plugin_value_select_text'];
-			        $protect_plugin_value_select_text = wp_kses($protect_plugin_value_select_text, array());
-			        
-			        $protect_plugin_value_subject = @$_POST['protect_plugin_value_subject'];
-			        $protect_plugin_value_subject = wp_kses($protect_plugin_value_subject, array());
+            $protect_plugin_value_select_text = $_POST['protect_plugin_value_select_text'] ?? '';
+            $protect_plugin_value_select_text = wp_kses($protect_plugin_value_select_text, array());
 
-			        $protect_plugin_value_color = @$_POST['protect_plugin_value_color'];
-			        $protect_plugin_value_color = wp_kses($protect_plugin_value_color, array());
+            $protect_plugin_value_subject = $_POST['protect_plugin_value_subject'] ?? '';
+            $protect_plugin_value_subject = wp_kses($protect_plugin_value_subject, array());
 
-			        $protect_plugin_value_user = @$_POST['protect_plugin_value_user'];
-			        $protect_plugin_value_user = wp_kses($protect_plugin_value_user, array());
-			        
-			        $protect_plugin_value_admin = @$_POST['protect_plugin_value_admin'];
-			        $protect_plugin_value_admin = wp_kses($protect_plugin_value_admin, array());
-			        
-			        $protect_plugin_value_f12 = @$_POST['protect_plugin_value_f12'];
-			        $protect_plugin_value_f12 = wp_kses($protect_plugin_value_f12, array());
-			        
-			        $javascript_protection_proversion = @$_POST['javascript_protection_proversion'];
-			        $javascript_protection_proversion = wp_kses($javascript_protection_proversion, array());
+            $protect_plugin_value_color = $_POST['protect_plugin_value_color'] ?? '';
+            $protect_plugin_value_color = wp_kses($protect_plugin_value_color, array());
 
-					$protect_plugin_value_print_no = @$_POST['protect_plugin_value_print_no'];
-			        $protect_plugin_value_print_no = wp_kses($protect_plugin_value_print_no, array());
+            $protect_plugin_value_user = $_POST['protect_plugin_value_user'] ?? '';
+            $protect_plugin_value_user = wp_kses($protect_plugin_value_user, array());
 
-			        $protect_plugin_value_pages = @$_POST['protect_plugin_value_pages'];
-			        $protect_plugin_value_pages = wp_kses($protect_plugin_value_pages, array());
+            $protect_plugin_value_admin = $_POST['protect_plugin_value_admin'] ?? '';
+            $protect_plugin_value_admin = wp_kses($protect_plugin_value_admin, array());
 
-			        $protect_plugin_value_posts = @$_POST['protect_plugin_value_posts'];
-			        $protect_plugin_value_posts = wp_kses($protect_plugin_value_posts, array());
-			        
-			        $protect_plugin_value_include = @$_POST['protect_plugin_value_include'];
-			        $protect_plugin_value_include = wp_kses($protect_plugin_value_include, array());
+            $protect_plugin_value_f12 = $_POST['protect_plugin_value_f12'] ?? '';
+            $protect_plugin_value_f12 = wp_kses($protect_plugin_value_f12, array());
 
-			        $protect_plugin_value_include_posts = @$_POST['protect_plugin_value_include_posts'];
-			        $protect_plugin_value_include_posts = wp_kses($protect_plugin_value_include_posts, array());
+            $javascript_protection_proversion = $_POST['javascript_protection_proversion'] ?? '';
+            $javascript_protection_proversion = wp_kses($javascript_protection_proversion, array());
 
+            $protect_plugin_value_print_no = $_POST['protect_plugin_value_print_no'] ?? '';
+            $protect_plugin_value_print_no = wp_kses($protect_plugin_value_print_no, array());
 
-					//データベース登録
-					update_option('protect_plugin_value_click', $protect_plugin_value_click);
-					update_option('protect_plugin_value_select_text', $protect_plugin_value_select_text);
-					update_option('protect_plugin_value_subject', $protect_plugin_value_subject);
-					update_option('protect_plugin_value_color', $protect_plugin_value_color);
-					update_option('protect_plugin_value_user', $protect_plugin_value_user);
-					update_option('protect_plugin_value_admin', $protect_plugin_value_admin);
-					update_option('wp_content_plus_btn_f12', $protect_plugin_value_f12);
-					update_option('javascript_protection_proversion', $javascript_protection_proversion);
-					update_option('protect_plugin_value_print_no', $protect_plugin_value_print_no);
-					update_option('protect_plugin_value_pages', $protect_plugin_value_pages);
-					update_option('protect_plugin_value_posts', $protect_plugin_value_posts);
-					update_option('protect_plugin_value_include', $protect_plugin_value_include);
-					update_option('protect_plugin_value_include_posts', $protect_plugin_value_include_posts);
-				
-				}
-			}
-		}
+            $protect_plugin_value_pages = $_POST['protect_plugin_value_pages'] ?? '';
+            $protect_plugin_value_pages = wp_kses($protect_plugin_value_pages, array());
+
+            $protect_plugin_value_posts = $_POST['protect_plugin_value_posts'] ?? '';
+            $protect_plugin_value_posts = wp_kses($protect_plugin_value_posts, array());
+
+            $protect_plugin_value_include = $_POST['protect_plugin_value_include'] ?? '';
+            $protect_plugin_value_include = wp_kses($protect_plugin_value_include, array());
+
+            $protect_plugin_value_include_posts = $_POST['protect_plugin_value_include_posts'] ?? '';
+            $protect_plugin_value_include_posts = wp_kses($protect_plugin_value_include_posts, array());
+
+            // データベース登録
+            update_option('protect_plugin_value_click', $protect_plugin_value_click);
+            update_option('protect_plugin_value_select_text', $protect_plugin_value_select_text);
+            update_option('protect_plugin_value_subject', $protect_plugin_value_subject);
+            update_option('protect_plugin_value_color', $protect_plugin_value_color);
+            update_option('protect_plugin_value_user', $protect_plugin_value_user);
+            update_option('protect_plugin_value_admin', $protect_plugin_value_admin);
+            update_option('wp_content_plus_btn_f12', $protect_plugin_value_f12);
+            update_option('javascript_protection_proversion', $javascript_protection_proversion);
+            update_option('protect_plugin_value_print_no', $protect_plugin_value_print_no);
+            update_option('protect_plugin_value_pages', $protect_plugin_value_pages);
+            update_option('protect_plugin_value_posts', $protect_plugin_value_posts);
+            update_option('protect_plugin_value_include', $protect_plugin_value_include);
+            update_option('protect_plugin_value_include_posts', $protect_plugin_value_include_posts);
+        }
+    }
+}
 
 
 	/***
@@ -246,40 +242,7 @@
 
 <div style="float:right;margin-top:160px;">
 
-<?php
-/***
- * レコメンドプラグイン
-***/
-function is_post_view_plugin_active($file) {
-	$is_post_view_active = false;
-	foreach ((array) get_option('active_plugins') as $val) {
-		if (preg_match('/'.preg_quote($file, '/').'/i', $val)) {
-			$is_post_view_active = true;
-			break;
-		}
-	}
-	return $is_post_view_active;
-}
-$is_post_view_active = is_post_view_plugin_active('post-views-stats-counter/wp_pvscounter.php');
 
-if($is_post_view_active == false){ ?>
-<div style="background-color:white;padding:15px;margin-bottom:70px;border-left:solid #46b450 5px;font-weight:500;">
-<?php _e('Another recommended SEO plugin:', $this->textdomain );?><br>
-
-	<?php if (is_multisite() == true){ ?>
-	<a href="<?php echo site_url(); ?>/wp-admin/network/plugin-install.php?tab=plugin-information&plugin=post-views-stats-counter" target="_blank"><?php _e('Post Views Stats Counter', $this->textdomain );?></a><br><br>
-	<?php }else{ ?>
-	<a href="<?php echo site_url(); ?>/wp-admin/plugin-install.php?tab=plugin-information&plugin=post-views-stats-counter" target="_blank"><?php _e('Post Views Stats Counter', $this->textdomain );?></a><br><br>
-	<?php } ?>
-
-<?php _e('Additional plugins are available for free.', $this->textdomain );?><br>
-</div>
-<?php } 
-
-/***
- * レコメンドプラグイン 終了
-***/
-?>
 
 <?php _e('Please see the explanation of this plugin from here!', $this->textdomain );?>
 <br />
