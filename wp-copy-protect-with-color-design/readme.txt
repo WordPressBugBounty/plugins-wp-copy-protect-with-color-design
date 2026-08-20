@@ -4,7 +4,7 @@ Donate link: https://global-s-h.com/wp_protect/en/index.php#donate
 Tags: content, content copy protection,  content protection, content theft, copy protection, copy protect, prevent copy, protect blog, image protect, image protection, no right click, plagiarism, secure content
 Requires at least: 3.0 or higher
 Tested up to: 6.8
-Stable tag: 2.4.2
+Stable tag: 2.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -234,3 +234,7 @@ WordPress 6.8 checked
 Store data even deactivation.
 Bug fixed.
 Warning fixed.
+
+
+**2.4.3 - August 20, 2026**
+WordPress 7.1 checked
